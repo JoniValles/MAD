@@ -794,8 +794,7 @@ class RmWrapper(DbWrapperBase):
                         wild_mon['pokemon_data']['display']['gender_value'],
                         None, None, None, None, None,
                         wild_mon['pokemon_data']['display']['weather_boosted_value'],
-                        now, wild_mon['pokemon_data']['display']['costume_value'],
-                        wild_mon['pokemon_data']['display']['form_value']
+                        now, wild_mon['pokemon_data']['display']['costume_value']
                     )
                 )
 
@@ -840,13 +839,13 @@ class RmWrapper(DbWrapperBase):
 
         query_gym = (
             "INSERT INTO gym (gym_id, team_id, guard_pokemon_id, slots_available, enabled, latitude, longitude, "
-            "total_cp, is_in_battle, last_modified, last_scanned, is_ex_raid_eligible, is_in_battle) "
-            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+            "total_cp, is_in_battle, last_modified, last_scanned, is_ex_raid_eligible) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
             "ON DUPLICATE KEY UPDATE "
             "guard_pokemon_id=VALUES(guard_pokemon_id), team_id=VALUES(team_id), "
             "slots_available=VALUES(slots_available), last_scanned=VALUES(last_scanned), "
             "last_modified=VALUES(last_modified), latitude=VALUES(latitude), longitude=VALUES(longitude), "
-            "is_ex_raid_eligible=VALUES(is_ex_raid_eligible),is_in_battle=VALUES(is_in_battle)"
+            "is_ex_raid_eligible=VALUES(is_ex_raid_eligible), is_in_battle=VALUES(is_in_battle)"
         )
         query_gym_details = (
             "INSERT INTO gymdetails (gym_id, name, url, last_scanned) "
@@ -863,12 +862,11 @@ class RmWrapper(DbWrapperBase):
                     latitude = gym['latitude']
                     longitude = gym['longitude']
                     slots_available = gym['gym_details']['slots_available']
-					is_in_battle = gym['gym_details']['is_in_battle']
-					total_cp = gym['gym_display']['total_cp']
                     last_modified_ts = gym['last_modified_timestamp_ms']/1000
                     last_modified = datetime.utcfromtimestamp(
                         last_modified_ts).strftime("%Y-%m-%d %H:%M:%S")
                     is_ex_raid_eligible = gym['gym_details']['is_ex_raid_eligible']
+                    is_in_battle = gym['gym_details']['is_in_battle']
 
                     gym_args.append(
                         (
@@ -876,7 +874,7 @@ class RmWrapper(DbWrapperBase):
                             1,  # enabled
                             latitude, longitude,
                             0,  # total CP
-                            is_in_battle,  # is_in_battle
+                            is_in_battle,  
                             last_modified,  # last_modified
                             now,   # last_scanned
                             is_ex_raid_eligible
